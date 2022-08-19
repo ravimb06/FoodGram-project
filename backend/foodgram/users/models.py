@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
@@ -60,3 +61,28 @@ class User(AbstractUser):
     @property
     def is_user(self):
         return self.role == USER
+
+
+class Follow(models.Model):
+    """Модель подписок."""
+    user = models.models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='follower',
+        verbose_name='Подписчик',
+        verbose_name_plural='Подписчики',
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='following',
+        verbose_name='Автор рецепта',
+        verbose_name_plural='Авторы рецепта',
+    )
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+
+    def __str__(self):
+        return f'{self.user} подписан на {self.author}.'
