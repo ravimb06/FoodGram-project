@@ -1,7 +1,7 @@
-from tabnanny import verbose
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
+from django.db.models import F, Q
 
 USER = 'user'
 ADMIN = 'admin'
@@ -83,6 +83,16 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'author'),
+                name='unique_follow',
+            ),
+            models.CheckConstraint(
+                check=~Q(user=F('author')),
+                name='self_following',
+            ),
+        )
 
     def __str__(self):
         return f'{self.user} подписан на {self.author}.'
