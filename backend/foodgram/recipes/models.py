@@ -1,5 +1,6 @@
 from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 from django.db import models
 
 User = get_user_model()
@@ -48,3 +49,50 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.slug
+
+
+class Recipe(models.Model):
+    """Модель рецептов."""
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Автор рецепта'
+    )
+    name = models.CharField(
+        max_length=200,
+        verbose_name='Название рецепта'
+    )
+    image = models.ImageField(
+        blank=True,
+        verbose_name='Картинка',
+        upload_to='recipes/images'
+    )
+    text = models.TextField(
+        verbose_name='Описание рецепта'
+    )
+    Ingredients = models.ManyToManyField(
+        Ingredient,
+        through='IngredientRecipe',
+        related_name='recipes',
+        verbose_name='Ингредиенты для рецепта'
+    )
+    tags = models.ManyToManyField(
+        Tag,
+        verbose_name='Теги'
+    )
+    cooking_time = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(1, 'Не меньше 1')],
+        verbose_name='Время приготовления, минут'
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата публикации'
+    )
+
+    class Meta:
+        ordering = ('-pub_date',)
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+
+    def __str__(self):
+        return self.name
