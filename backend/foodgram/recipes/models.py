@@ -131,3 +131,48 @@ class IngredientRecipe(models.Model):
 
     def __str__(self):
         return f'{self.recipe}: {self.ingredient} - {self.amount}'
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        related_name='in_favorite',
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        ordering = ('user',)
+        verbose_name = 'Избранный рецепт'
+        verbose_name_plural = 'Избранные рецепты'
+        default_related_name = 'favorites'
+        constrains = (
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_favorites',
+            ),
+        )
+
+
+class Cart(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        verbose_name = 'Рецепт в корзине'
+        verbose_name_plural = 'Корзина рецептов'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_cart',
+            ),
+        )
