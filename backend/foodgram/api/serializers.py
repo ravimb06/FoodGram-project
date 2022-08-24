@@ -17,6 +17,17 @@ class RecipeShortInfo(ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
+class TagSerializer(ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = (
+            'id',
+            'name',
+            'color',
+            'slug',
+        )
+
+
 class UsersSerializer(UserSerializer):
     is_subscribed = SerializerMethodField()
 
@@ -35,6 +46,16 @@ class UsersSerializer(UserSerializer):
             user=request.user, author=obj).exists()
 
 
+class IngredientSerializer(ModelSerializer):
+    class Meta:
+        model = Ingredient
+        fields = (
+            'id',
+            'name',
+            'measurement_unit'
+        )
+
+
 class FollowListSerializer(ModelSerializer):
     recipes = SerializerMethodField()
     recipes_count = SerializerMethodField()
@@ -44,7 +65,7 @@ class FollowListSerializer(ModelSerializer):
         model = User
         fields = (
             'email', 'id', 'username', 'first_name', 'last_name',
-            'is_subscribed', 'recipes', 'recipes_count'
+            'is_subscribed', 'recipes', 'recipes_count',
         )
 
     def get_recipes_count(self, author):
@@ -56,14 +77,19 @@ class FollowListSerializer(ModelSerializer):
         if not recipes_limit:
             return RecipeShortInfo(
                 Recipe.objects.filter(author=author),
-                many=True
+                many=True,
                 context={'request': queryset}
-            ).dataclass
-        def get_is_subscribed(self, author):
-            return Follow.objects.filter(
-                user=self.context.get('request').user,
-                author=author
-            ).exists()
+            ).data
+        return RecipeShortInfo(
+            Recipe.objects.filter(author=author)[:int(recipes_limit)],
+            many=True, context={'request': queryset}
+        ).data
+
+    def get_is_subscribed(self, author):
+        return Follow.objects.filter(
+            user=self.context.get('request').user,
+            author=author
+        ).exists()
 
 
 class FollowSerializer(ModelSerializer):
@@ -73,13 +99,14 @@ class FollowSerializer(ModelSerializer):
 
     def validate(self, data):
         get_object_or_404(User, username=data['author'])
-        if self.context['request'].user == data[ 'author']:
+        if self.context['request'].user == data['author']:
             raise ValidationError({
                 'errors': 'На себя подписываться нельзя.'
             })
         if Follow.objects.filter(
-            user=self.context['request'].user,
-            author=data['author']):
+                user=self.context['request'].user,
+                author=data['author']
+        ):
             raise ValidationError({
                 'errors': 'Вы уже подписаны.'
             })
@@ -90,3 +117,29 @@ class FollowSerializer(ModelSerializer):
             instance.author,
             context={'request': self.context.get('request')}
         ).data
+
+
+class IngredientRecipeSerializer(ModelSerializer):
+    id = PrimaryKeyRelatedField(
+        source='ingredient',
+        read_only=True
+    )
+    measurement_unit = SlugRelatedField(
+        source='ingredient',
+        read_only=True,
+        slug_field='measurement_unit',
+    )
+    name = SlugRelatedField(
+        source='ingredient',
+        slug_field='name',
+        read_only=True,
+    )
+
+    class Meta:
+        model = IngredientRecipe
+        fields = (
+            'id',
+            'name',
+            'measurement_unit',
+            'amount',
+        )
