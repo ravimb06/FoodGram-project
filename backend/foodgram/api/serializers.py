@@ -143,3 +143,37 @@ class IngredientRecipeSerializer(ModelSerializer):
             'measurement_unit',
             'amount',
         )
+
+
+class RecipeSerializer(ModelSerializer):
+    tags = TagSerializer(many=True, read_only=True)
+    Ingredients = IngredientRecipeSerializer(
+        many=True,
+        read_only=True,
+        source='ingredients_recipe',
+    )
+    author = UsersSerializer(read_only=True)
+    is_in_shopping_cart = SerializerMethodField(read_only=True)
+    is_favorited = SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Recipe
+        fields = (
+            'id', 'name', 'author', 'ingredients',
+            'image', 'text', 'tags', 'cooking_time',
+            'is_favorited', 'is_in_shopping_cart'
+        )
+
+    def get_is_favorited(self, obj):
+        request = self.context.get('request')
+        if request.user.is_anonymous:
+            return False
+        return Favorite.objects.filter(
+            user=request.user, recipe__id=obj.id).exists()
+
+    def get_is_in_shopping_cart(self, obj):
+        request = self.context.get('request')
+        if request.user.is_anonymous:
+            return False
+        return Cart.objects.filter(
+            user=request.user, recipe__id=obj.id).exists()
