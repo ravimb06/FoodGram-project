@@ -177,3 +177,31 @@ class RecipeSerializer(ModelSerializer):
             return False
         return Cart.objects.filter(
             user=request.user, recipe__id=obj.id).exists()
+
+
+class CreateIngredientRecipeSerializer(ModelSerializer):
+    id = PrimaryKeyRelatedField(
+        source='ingredient',
+        queryset=Ingredient.objects.all()
+    )
+
+    class Meta:
+        model = IngredientRecipe
+        fields = (
+            'id',
+            'amount',
+        )
+
+    def validate_amount(self, data):
+        if int(data) < 1:
+            raise ValidationError({
+                'ingredients': ('Не может быть меньше 1'),
+                'msg': data
+            })
+        return data
+
+    def create(self, validated_data):
+        return IngredientRecipe.objects.create(
+            Ingredient=validated_data.get('id'),
+            amount=validated_data.get('amount')
+        )
