@@ -3,16 +3,18 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.db.models import F, Q
 
-USER = 'user'
-ADMIN = 'admin'
+
+class UserRole:
+    USER = 'user'
+    ADMIN = 'admin'
+    choices = [
+        (USER, 'USER'),
+        (ADMIN, 'ADMIN')
+    ]
 
 
 class User(AbstractUser):
     """Модель пользователей."""
-    ROLES = (
-        (USER, USER),
-        (ADMIN, ADMIN),
-    )
     username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
@@ -37,9 +39,9 @@ class User(AbstractUser):
         verbose_name='email',
     )
     role = models.CharField(
-        choices=ROLES,
+        choices=UserRole.choices,
         max_length=25,
-        default=USER,
+        default=UserRole.USER,
         verbose_name='Роль пользователя'
     )
 
@@ -56,11 +58,11 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == ADMIN or self.is_superuser
+        return self.role == UserRole.ADMIN or self.is_superuser
 
     @property
     def is_user(self):
-        return self.role == USER
+        return self.role == UserRole.USER
 
 
 class Follow(models.Model):
