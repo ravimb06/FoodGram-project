@@ -123,7 +123,7 @@ class IngredientRecipe(models.Model):
                 fields=('recipe', 'ingredient',),
                 name='recipe_ingredient_exists'),
             models.CheckConstraint(
-                chek=models.Q(amount__gte=1),
+                check=models.Q(amount__gte=1),
                 name='amount_gte_1',),
         )
         verbose_name = 'Ингредиент в рецепте'
@@ -149,7 +149,7 @@ class Favorite(models.Model):
         verbose_name = 'Избранный рецепт'
         verbose_name_plural = 'Избранные рецепты'
         default_related_name = 'favorites'
-        constrains = (
+        constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
                 name='unique_favorites',

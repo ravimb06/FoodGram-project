@@ -143,7 +143,6 @@ class RecipeViewSet(ModelViewSet):
         )
 
     @favorite.mapping.delete
-    def favorite(self, request, pk):
+    def delete_favorite(self, request, pk):
         return self.delete_method_for_actions(
-            request=request, pk=pk, model=Favorite
-        )
+            request=request, pk=pk, model=Favorite)
