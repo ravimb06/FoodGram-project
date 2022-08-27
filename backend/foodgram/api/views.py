@@ -4,9 +4,13 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
+from .filters import IngredientSearchFilter
 from .pagination import CustomPagination
-from .serializers import (FollowListSerializer, FollowSerializer)
+from .serializers import (FollowListSerializer, FollowSerializer,
+                          IngredientSerializer, TagSerializer)
+from recipes.models import (Ingredient, Tag)
 from users.models import Follow, User
 
 
@@ -48,3 +52,15 @@ class UsersViewSet(UserViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TagViewSet(ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
+class IngredientViewSet(ModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
+    filter_backends = (IngredientSearchFilter,)
+    search_fields = ('^name',)
