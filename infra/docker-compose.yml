@@ -2,14 +2,14 @@ version: '3.8'
 services:
 
   db:
-    image: postgres:14.4-alpine
+    image: postgres:13.0-alpine
     volumes:
-      - db_value:/var/lib/postgresql/data/
+      - /var/lib/postgresql/data/
     env_file:
       - ../backend/foodgram/foodgram/.env
 
   backend:
-    image: ravimb06/foodgram-backend:latest
+    image: ravimb06/foodgram-backend:v1.0
     restart: always
     volumes:
       - static_value:/app/static/
@@ -20,23 +20,32 @@ services:
       - ../backend/foodgram/foodgram/.env
 
   frontend:
-    image: ravimb06/foodgram-frontend:latest
+    image: ravimb06/foodgram-frontend:v1.0
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
       - backend
 
   nginx:
-    image: nginx:1.19.3
+    image: nginx:1.21.3-alpine
     ports:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+
       - ../frontend/build:/usr/share/nginx/html/
+
       - ../docs/:/usr/share/nginx/html/api/docs/
-      - static_value:/var/html/static
-      - media_value:/var/html/media
+
+      - static_value:/var/html/static/
+
+      - media_value:/var/html/media/
+
     depends_on:
       - backend
       - frontend
+
+volumes:
+  static_value:
+  media_value:
 
