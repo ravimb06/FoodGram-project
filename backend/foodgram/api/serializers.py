@@ -148,7 +148,7 @@ class IngredientRecipeSerializer(ModelSerializer):
 
 class RecipeSerializer(ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
-    Ingredients = IngredientRecipeSerializer(
+    ingredients = IngredientRecipeSerializer(
         many=True,
         read_only=True,
         source='ingredients_recipe',
@@ -203,7 +203,7 @@ class CreateIngredientRecipeSerializer(ModelSerializer):
 
     def create(self, validated_data):
         return IngredientRecipe.objects.create(
-            Ingredient=validated_data.get('id'),
+            ingredient=validated_data.get('id'),
             amount=validated_data.get('amount')
         )
 

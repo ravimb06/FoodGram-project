@@ -90,7 +90,7 @@ class RecipeViewSet(ModelViewSet):
         return CreateRecipeSerializer
 
     @staticmethod
-    def post_method_for_action(request, pk, serializers):
+    def post_method_for_actions(request, pk, serializers):
         data = {'user': request.user.id, 'recipe': pk}
         serializer = serializers(data=data, context={'request': request})
         serializer.is_valid(raise_exception=True)
@@ -107,7 +107,7 @@ class RecipeViewSet(ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def shopping_cart(self, request, pk):
-        return self.post_method_for_action(
+        return self.post_method_for_actions(
             request, pk, serializers=CartSerializer
         )
 
