@@ -1,3 +1,4 @@
+from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserSerializer
 from drf_base64.fields import Base64ImageField
@@ -210,7 +211,7 @@ class CreateIngredientRecipeSerializer(ModelSerializer):
 class CreateRecipeSerializer(ModelSerializer):
     image = Base64ImageField(use_url=True, max_length=None)
     author = UsersSerializer(read_only=True)
-    Ingredients = CreateIngredientRecipeSerializer(many=True)
+    ingredients = CreateIngredientRecipeSerializer(many=True)
     tags = PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
     cooking_time = IntegerField()
 
@@ -225,8 +226,8 @@ class CreateRecipeSerializer(ModelSerializer):
         IngredientRecipe.objects.bulk_create([
             IngredientRecipe(
                 recipe=recipe,
-                amount=Ingredient['amount'],
-                Ingredient=ingredient['ingredient'],
+                amount=ingredient['amount'],
+                ingredient=ingredient['ingredient'],
             ) for ingredient in ingredients
         ])
 
@@ -246,6 +247,7 @@ class CreateRecipeSerializer(ModelSerializer):
             )
         return data
 
+    @atomic
     def create(self, validated_data):
         request = self.context.get('request')
         ingredients = validated_data.pop('ingredients')
@@ -258,6 +260,7 @@ class CreateRecipeSerializer(ModelSerializer):
         recipe.tags.set(tags)
         return recipe
 
+    @atomic
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients')
         recipe = instance
