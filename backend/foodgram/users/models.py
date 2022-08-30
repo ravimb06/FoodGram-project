@@ -38,9 +38,8 @@ class User(AbstractUser):
         unique=True,
         verbose_name='email',
     )
-    role = models.CharField(
+    role = models.TextField(
         choices=UserRole.choices,
-        max_length=25,
         default=UserRole.USER,
         verbose_name='Роль пользователя'
     )
@@ -49,7 +48,7 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
 
     class Meta:
-        ordering = (id,)
+        ordering = ('id',)
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
