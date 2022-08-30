@@ -47,7 +47,7 @@ jobs:
         with:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram-backend:latest
-          context: backend/
+          context: backend/foodgram/
           no-cache: true
 
       - name: Push frontend to Docker Hub
@@ -69,6 +69,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             sudo docker compose down
             sudo docker pull ravimb06/foodgram-backend:latest
