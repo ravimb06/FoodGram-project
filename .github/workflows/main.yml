@@ -71,7 +71,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker compose down
+            sudo docker compose stop
+            sudo docker compose rm backend
             sudo docker pull ravimb06/foodgram-backend:latest
             rm .env
             touch .env
