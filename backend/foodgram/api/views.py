@@ -126,7 +126,7 @@ class RecipeViewSet(ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def favorite(self, request, pk):
-        return self.post_method_for_action(
+        return self.post_method_for_actions(
             request=request, pk=pk, serializers=FavoriteSerializer)
 
     @favorite.mapping.delete
