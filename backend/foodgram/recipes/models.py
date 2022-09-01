@@ -28,6 +28,19 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     """Модель тегов"""
+    BLUE = '#0000FF'
+    ORANGE = '#FFA500'
+    GREEN = '#008000'
+    PURPLE = '#800080'
+    YELLOW = '#FFFF00'
+
+    COLOR_CHOICES = [
+        (BLUE, 'Синий'),
+        (ORANGE, 'Оранжевый'),
+        (GREEN, 'Зеленый'),
+        (PURPLE, 'Фиолетовый'),
+        (YELLOW, 'Желтый'),
+    ]
     name = models.CharField(
         max_length=200,
         verbose_name='Название тега',
@@ -35,6 +48,7 @@ class Tag(models.Model):
     )
     color = ColorField(
         format='hex',
+        choices=COLOR_CHOICES,
         verbose_name='Код цвета'
     )
     slug = models.SlugField(
