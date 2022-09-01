@@ -1,4 +1,3 @@
-from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -28,6 +27,7 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     """Модель тегов"""
+    RED = '#f2100c'
     BLUE = '#0000FF'
     ORANGE = '#FFA500'
     GREEN = '#008000'
@@ -35,6 +35,7 @@ class Tag(models.Model):
     YELLOW = '#FFFF00'
 
     COLOR_CHOICES = [
+        (RED, 'Красный'),
         (BLUE, 'Синий'),
         (ORANGE, 'Оранжевый'),
         (GREEN, 'Зеленый'),
@@ -46,10 +47,11 @@ class Tag(models.Model):
         verbose_name='Название тега',
         db_index=True
     )
-    color = ColorField(
-        format='hex',
+    color = models.CharField(
+        max_length=7,
+        unique=True,
         choices=COLOR_CHOICES,
-        verbose_name='Код цвета'
+        verbose_name=' HEX-код цвета'
     )
     slug = models.SlugField(
         max_length=200,
