@@ -67,8 +67,10 @@
     -  http://localhost/ - главная страница сайта;
     -  http://localhost/admin/ - админ панель;
     -  http://localhost/api/ - API проекта
-    -  http://localhost/api/docs/redoc.html - документация к API
 
 ---
 ## Автор
-**[Али Богатырев](https://github.com/ravimb06)** 
+**[Али Богатырев](https://github.com/ravimb06)**
+
+Проект развернут по адресу : **[ravimb06.ddns.net](http://ravimb06.ddns.net/recipes)**
+email и пароль Администратора: test@test.com , Testtest
