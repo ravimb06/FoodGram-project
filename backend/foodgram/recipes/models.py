@@ -123,6 +123,7 @@ class IngredientRecipe(models.Model):
     )
     recipe = models.ForeignKey(
         Recipe,
+        related_name='ingredients_recipe',
         on_delete=models.CASCADE,
         verbose_name='Рецепт'
     )
@@ -133,7 +134,6 @@ class IngredientRecipe(models.Model):
     )
 
     class Meta:
-        default_related_name = 'ingredients_recipe'
         constraints = (
             models.UniqueConstraint(
                 fields=('recipe', 'ingredient',),
