@@ -165,7 +165,6 @@ class CreateRecipeSerializer(ModelSerializer):
     def validate(self, data):
         ingredients = self.initial_data.get('ingredients')
         ingredients_list = []
-        cooking_time = self.initial_data.get['cooking_time']
         for ingredient in ingredients:
             ingredient_id = ingredient['id']
             ingredient_amount = ingredient['amount']
@@ -178,7 +177,7 @@ class CreateRecipeSerializer(ModelSerializer):
                     'Ингредиенты повторяются!'
                 )
             ingredients_list.append(ingredient_id)
-        if cooking_time <= 0:
+        if self.data.get('cooking_time') <= 0:
             raise ValidationError(
                 'Время приготовления должно быть больше 0 !'
             )
@@ -201,7 +200,7 @@ class CreateRecipeSerializer(ModelSerializer):
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients')
         recipe = instance
-        IngredientRecipe.objects.filter(recipe=recipe).delete()
+        recipe.ingredients_recipe.delete()
         self.create_ingredients(recipe, ingredients)
         return super().update(recipe, validated_data)
 
