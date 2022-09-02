@@ -165,7 +165,7 @@ class CreateRecipeSerializer(ModelSerializer):
     def validate(self, data):
         ingredients = self.initial_data.get('ingredients')
         ingredients_list = []
-        cooking_time = self.initial_data.get('cooking_time')
+        cooking_time = self.initial_data.get['cooking_time']
         for ingredient in ingredients:
             ingredient_id = ingredient['id']
             ingredient_amount = ingredient['amount']
@@ -266,9 +266,10 @@ class FavoriteSerializer(ModelSerializer):
 
 
 class FollowListSerializer(ModelSerializer):
-    recipes = SerializerMethodField()
-    recipes_count = SerializerMethodField()
-    is_subscribed = SerializerMethodField(read_only=True)
+    recipes = SerializerMethodField(method_name='get_recipes')
+    recipes_count = SerializerMethodField(method_name='get_recipes_count')
+    is_subscribed = SerializerMethodField(method_name='get_is_subscribed',
+                                          read_only=True)
 
     class Meta:
         model = User
