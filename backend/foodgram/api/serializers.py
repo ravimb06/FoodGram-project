@@ -168,15 +168,16 @@ class CreateRecipeSerializer(ModelSerializer):
         cooking_time = self.initial_data.get('cooking_time')
         for ingredient in ingredients:
             ingredient_id = ingredient['id']
+            ingredient_amount = ingredient['amount']
+            if ingredient_amount <= 0:
+                raise ValidationError(
+                    'Количество ингредиента должно быть больше 0 !'
+                )
             if ingredient_id in ingredients_list:
                 raise ValidationError(
                     'Ингредиенты повторяются!'
                 )
             ingredients_list.append(ingredient_id)
-        if not cooking_time:
-            raise ValidationError(
-                'Не указано время приготовления !'
-            )
         if cooking_time <= 0:
             raise ValidationError(
                 'Время приготовления должно быть больше 0 !'
