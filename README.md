@@ -73,4 +73,3 @@
 **[Али Богатырев](https://github.com/ravimb06)**
 
 Проект развернут по адресу : **[ravimb06.ddns.net](http://ravimb06.ddns.net/recipes)**
-email и пароль Администратора: test@test.com , Testtest
