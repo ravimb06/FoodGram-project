@@ -72,4 +72,4 @@
 ## Автор
 **[Али Богатырев](https://github.com/ravimb06)**
 
-Проект развернут по адресу : **[ravimb06.ddns.net](http://ravimb06.ddns.net/recipes)**
+Проект развернут по адресу : **[foodgram24.ddns.net](http://foodgram24.ddns.net/recipes)**
