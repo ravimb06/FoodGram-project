@@ -57,7 +57,7 @@
     sudo docker compose exec backend python manage.py collectstatic --no-input 
     ```
 
-5. Загрузите в бд ингредиенты командой ниже.
+5. Загрузите в БД ингредиенты командой ниже.
 
     ```
     sudo docker compose exec backend python manage.py load_ingredients
